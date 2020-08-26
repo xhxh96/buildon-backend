@@ -3,9 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const bodyParser = require("body-parser");
+const AWS = require('aws-sdk');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+AWS.config.update({
+  region: 'us-east-1'
+})
+
+AWS.config.apiVersions = {
+  dynamodb: '2012-08-10'
+}
 
 var app = express();
 
