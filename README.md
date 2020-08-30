@@ -11,6 +11,6 @@ JavaScript using NodeJS runtime, bootstrapped with Express application generator
 Currently, the endpoints are (running on port 3000):
 
 * /users -- return a list of registered (?) users (GET)
-* /users/create -- create a new user (POST)
-* /users/getUser -- returns attribute associated to a user based on the user ID sent via the body as uuid (POST)
+* /users/create -- create a new user (POST) -- body should containe "email" and "password" parameters
+* /users/getUser -- returns attribute associated to a user based on the user ID (POST) -- body should container "uuid" parameter
 
