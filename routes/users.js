@@ -32,7 +32,7 @@ router.post('/create', async function(req, res) {
   const params = {
     TableName: TABLE_NAME,
     Item: {
-      uuid,
+      user_id: uuid,
       email,
       password: passwordHash
     }
@@ -43,7 +43,7 @@ router.post('/create', async function(req, res) {
       console.error("Unable to add item. Error: ", JSON.stringify(err, null, 2))
       res.sendStatus(500)
     } else {
-      res.status(200).json({ id: uuid })
+      res.status(200).json({ user_id: uuid })
     }
   })
 })
@@ -55,7 +55,7 @@ router.get('/getUser', async function(req, res) {
     TableName: TABLE_NAME,
     KeyConditionExpression: "#userId = :userId",
     ExpressionAttributeNames: {
-      "#userId": "uuid"
+      "#userId": "user_id"
     },
     ExpressionAttributeValues: {
       ":userId": userId
