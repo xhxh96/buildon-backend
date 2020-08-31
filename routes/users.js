@@ -84,7 +84,7 @@ router.post('/create', async function (req, res) {
  * Get user info
  */
 router.get('/getUser', async function (req, res) {
-  const {uuid: userId} = req.body
+  const { userId } = req.body
 
   const params = {
     TableName: TABLE_NAME,
