@@ -14,5 +14,5 @@ Currently, the endpoints are (running on port 3000):
 |-----------------|--------|--------------------------------|-------------------|----------------------------------------------------------------------------|
 | `/users`        | GET    | N.A                            | `[User]`          | Returns an array of registered users                                       |
 | `/users/create` | POST   | email: string password: string | `user_id`         | Create an user account and returns the `user_id` of the associated account |
-| `users/getUser` | GET    | user_id: string                | `User` \| `Error` | Returns the attribute of the associated user queried via `user_id`         |
+| `users/getUser` | GET    | userId: string                | `User` \| `Error` | Returns the attribute of the associated user queried via `user_id`         |
 | `users/login`   | GET    | email: string password: string | `User` \| `Error` | Returns the attribute of the associated user if login successful           |
