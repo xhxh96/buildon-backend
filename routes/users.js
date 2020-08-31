@@ -1,6 +1,6 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
+const {v4: uuidv4} = require('uuid');
 
 const docClient = require('../config/aws')
 
@@ -9,9 +9,9 @@ const router = express.Router();
 const TABLE_NAME = 'user_details'
 
 /*
-  Get all users
+ * Get all users
  */
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   const params = {
     TableName: TABLE_NAME
   }
@@ -20,11 +20,43 @@ router.get('/', async function(req, res, next) {
   res.json(result.Items)
 });
 
+/**
+ * Login User
+ */
+router.get('/login', async function (req, res) {
+  const {email, password} = req.body
+
+  const params = {
+    TableName: TABLE_NAME,
+    IndexName: 'email-index',
+    KeyConditionExpression: "email = :email",
+    ExpressionAttributeValues: {
+      ":email": email.toLowerCase()
+    }
+  }
+
+  docClient.query(params, async function (err, data) {
+    if (err) {
+      return console.error("Unable to query. Error: ", JSON.stringify(err, null, 2))
+    }
+
+    if (data.Items.length > 0) {
+      const user = data.Items[0]
+      bcrypt.compare(password, user.password).then(result => {
+        if (result) res.status(200).json(data.Items[0])
+        else res.status(404).json({error: 'Invalid password'})
+      })
+    } else {
+      res.status(404).json({error: 'Invalid user'})
+    }
+  })
+})
+
 /*
   Create user account
  */
-router.post('/create', async function(req, res) {
-  const { email, password } = req.body
+router.post('/create', async function (req, res) {
+  const {email, password} = req.body
 
   const uuid = uuidv4();
   const passwordHash = await bcrypt.hash(password, 10)
@@ -33,23 +65,26 @@ router.post('/create', async function(req, res) {
     TableName: TABLE_NAME,
     Item: {
       user_id: uuid,
-      email,
+      email: email.toLowerCase(),
       password: passwordHash
     }
   }
 
-  docClient.put(params, function(err, data) {
+  docClient.put(params, function (err, data) {
     if (err) {
       console.error("Unable to add item. Error: ", JSON.stringify(err, null, 2))
       res.sendStatus(500)
     } else {
-      res.status(200).json({ user_id: uuid })
+      res.status(200).json({user_id: uuid})
     }
   })
 })
 
-router.get('/getUser', async function(req, res) {
-  const { uuid: userId } = req.body
+/**
+ * Get user info
+ */
+router.get('/getUser', async function (req, res) {
+  const {uuid: userId} = req.body
 
   const params = {
     TableName: TABLE_NAME,
@@ -62,7 +97,7 @@ router.get('/getUser', async function(req, res) {
     }
   }
 
-  docClient.query(params, function(err, data) {
+  docClient.query(params, function (err, data) {
     if (err) {
       console.error("Unable to query. Error: ", JSON.stringify(err, null, 2))
     } else {
