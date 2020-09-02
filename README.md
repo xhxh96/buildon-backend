@@ -10,9 +10,10 @@ JavaScript using NodeJS runtime, bootstrapped with Express application generator
 # Endpoints:
 Currently, the endpoints are (running on port 3000):
 
-| Endpoint        | Method | Body                           | Response          | Description                                                                |
+| Endpoint        | Method | Request Body                           | Response Body          | Description                                                                |
 |-----------------|--------|--------------------------------|-------------------|----------------------------------------------------------------------------|
 | `/users`        | GET    | N.A                            | `[User]`          | Returns an array of registered users                                       |
 | `/users/create` | POST   | email: string password: string | `user_id`         | Create an user account and returns the `user_id` of the associated account |
-| `users/getUser` | GET    | userId: string                | `User` \| `Error` | Returns the attribute of the associated user queried via `user_id`         |
-| `users/login`   | GET    | email: string password: string | `User` \| `Error` | Returns the attribute of the associated user if login successful           |
+| `users/getUser` | GET    | userId: string                | `User` | Returns the attribute of the associated user queried via `user_id`         |
+| `users/login`   | GET    | email: string password: string | `User` | Returns the attribute of the associated user if login successful           |
+| `/stocks/topFive` | GET   | N.A. | `[{stocks: string, data: object}]`         | Returns top five performing stocks (requires getting api key from market stack (set api key in `constants/marketStack`) |

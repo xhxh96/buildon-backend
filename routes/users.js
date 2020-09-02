@@ -1,17 +1,20 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const {v4: uuidv4} = require('uuid');
+const {get} = require('lodash')
 
 const docClient = require('../config/aws')
+const userAttribute = require('../constants/userAttribute')
+
 
 const router = express.Router();
 
-const TABLE_NAME = 'user_details'
+const TABLE_NAME = 'dbs-rm-data-DDBtable-SOT1O0ULLVMW'
 
 /*
  * Get all users
  */
-router.get('/', async function (req, res, next) {
+router.get('/', async function (req, res) {
   const params = {
     TableName: TABLE_NAME
   }
@@ -70,7 +73,7 @@ router.post('/create', async function (req, res) {
     }
   }
 
-  docClient.put(params, function (err, data) {
+  docClient.put(params, function (err) {
     if (err) {
       console.error("Unable to add item. Error: ", JSON.stringify(err, null, 2))
       res.sendStatus(500)
@@ -90,7 +93,7 @@ router.get('/getUser', async function (req, res) {
     TableName: TABLE_NAME,
     KeyConditionExpression: "#userId = :userId",
     ExpressionAttributeNames: {
-      "#userId": "user_id"
+      "#userId": "ID"
     },
     ExpressionAttributeValues: {
       ":userId": userId
@@ -101,7 +104,38 @@ router.get('/getUser', async function (req, res) {
     if (err) {
       console.error("Unable to query. Error: ", JSON.stringify(err, null, 2))
     } else {
-      res.status(200).json(data.Items)
+      res.status(200).json(data.Items[0])
+    }
+  })
+})
+
+/**
+ * Get user info for ML
+ */
+router.get('/getUserML', async function (req, res) {
+  const { userId } = req.body
+
+  const params = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression: "#userId = :userId",
+    ExpressionAttributeNames: {
+      "#userId": "ID"
+    },
+    ExpressionAttributeValues: {
+      ":userId": userId
+    }
+  }
+
+  docClient.query(params, function (err, data) {
+    if (err) {
+      console.error("Unable to query. Error: ", JSON.stringify(err, null, 2))
+    } else {
+      const user = data.Items[0]
+      const formattedUser = new Array(userAttribute.length)
+      for (let i = 0; i < userAttribute.length; i++) {
+        formattedUser[i] = get(user, userAttribute[i], '')
+      }
+      res.status(200).json(formattedUser)
     }
   })
 })
