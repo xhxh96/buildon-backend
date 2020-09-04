@@ -43,7 +43,7 @@ router.get('/userStock', async function (req, res) {
 })
 
 router.get('/userStockRecommended', async function (req, res) {
-  const stocks = ['LQD', 'IBDL', 'TOTL', 'USHY']
+  const stocks = ['CARA', 'APTO', 'RUN', 'DHR', 'OSMT']
   const params = {
     access_key: apiKey
   }
@@ -60,7 +60,7 @@ router.get('/userStockRecommended', async function (req, res) {
 })
 
 router.get('/userStockTasteBreaker', async function (req, res) {
-  const stocks = ['MSFT', 'DD', 'CALA', 'ACAD', 'CRNC']
+  const stocks = ['MSFT', 'BSX', 'WIFI', 'TRIL', 'MYOV']
   const params = {
     access_key: apiKey
   }
