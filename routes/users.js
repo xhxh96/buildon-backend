@@ -87,16 +87,17 @@ router.post('/create', async function (req, res) {
  * Get user info
  */
 router.get('/getUser', async function (req, res) {
-  const { userId } = req.body
+  const { email } = req.body
 
   const params = {
     TableName: TABLE_NAME,
-    KeyConditionExpression: "#userId = :userId",
+    IndexName: 'email-index',
+    KeyConditionExpression: "#email = :email",
     ExpressionAttributeNames: {
-      "#userId": "ID"
+      "#email": "email"
     },
     ExpressionAttributeValues: {
-      ":userId": userId
+      ":email": email
     }
   }
 
